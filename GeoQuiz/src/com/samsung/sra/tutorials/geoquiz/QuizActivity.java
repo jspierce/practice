@@ -1,6 +1,7 @@
 package com.samsung.sra.tutorials.geoquiz;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -14,6 +15,7 @@ public class QuizActivity extends Activity {
 
 	private Button mTrueButton;
 	private Button mFalseButton;
+	private Button mCheatButton;
 	private ImageButton mNextButton;
 	private ImageButton mPrevButton;
 	private TextView mQuestionTextView;
@@ -37,7 +39,7 @@ public class QuizActivity extends Activity {
         Log.d(TAG, "OnCreate(Bundle) called");
         setContentView(R.layout.activity_quiz);
         
-        //mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
+        mQuestionTextView = (TextView) findViewById(R.id.question_text_view);
         mQuestionTextView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -61,6 +63,16 @@ public class QuizActivity extends Activity {
         		checkAnswer(false);
         	}
         });
+        
+        mCheatButton = (Button) findViewById(R.id.cheat_button);
+        mCheatButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent i = new Intent(QuizActivity.this, CheatActivity.class);
+				startActivity(i);
+			}
+		});
         
         mNextButton = (ImageButton) findViewById(R.id.next_button);
         mNextButton.setOnClickListener(new View.OnClickListener() {
