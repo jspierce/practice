@@ -19,6 +19,7 @@ public class QuizActivity extends Activity {
 	private ImageButton mNextButton;
 	private ImageButton mPrevButton;
 	private TextView mQuestionTextView;
+	private boolean mIsCheater;
 	
 	private static final String TAG = "QuizActivity";
 	private static final String KEY_INDEX = "index";
@@ -70,7 +71,11 @@ public class QuizActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				Intent i = new Intent(QuizActivity.this, CheatActivity.class);
-				startActivity(i);
+				boolean answerIsTrue = mQuestionBank[mCurrentIndex].isTrueQuestion();
+				i.putExtra(CheatActivity.EXTRA_ANSWER_IS_TRUE, answerIsTrue);
+				
+				//startActivity(i);
+				startActivityForResult(i, 0);
 			}
 		});
         
@@ -79,6 +84,7 @@ public class QuizActivity extends Activity {
         	@Override
         	public void onClick(View v) {
         		mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
+        		mIsCheater = false;
         		updateQuestion();
         	}
         });
@@ -91,6 +97,7 @@ public class QuizActivity extends Activity {
 				if (mCurrentIndex < 0)
 					mCurrentIndex = mQuestionBank.length - 1;
 				
+				mIsCheater = false;
         		updateQuestion();
 			}
 		});
@@ -140,6 +147,14 @@ public class QuizActivity extends Activity {
     }
     
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	if (data == null)
+    		return;
+    	
+    	mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+    }
+    
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.quiz, menu);
@@ -157,10 +172,14 @@ public class QuizActivity extends Activity {
 		
 		int messageResId = 0;
 		
-		if (userPressedTrue == answerIsTrue)
-			messageResId = R.string.correct_toast;
-		else
-			messageResId = R.string.incorrect_toast;
+		if (mIsCheater) {
+			messageResId = R.string.judgement_toast;
+		} else {
+			if (userPressedTrue == answerIsTrue)
+				messageResId = R.string.correct_toast;
+			else
+				messageResId = R.string.incorrect_toast;
+		}
 		
 		Toast.makeText(QuizActivity.this, messageResId, Toast.LENGTH_SHORT).show();
 	}
