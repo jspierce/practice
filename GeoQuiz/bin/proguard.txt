@@ -1,0 +1,3 @@
+# view AndroidManifest.xml #generated:16
+-keep class com.samsung.sra.tutorials.geoquiz.QuizActivity { <init>(...); }
+
