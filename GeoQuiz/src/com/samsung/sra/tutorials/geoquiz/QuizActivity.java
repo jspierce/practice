@@ -19,10 +19,10 @@ public class QuizActivity extends Activity {
 	private ImageButton mNextButton;
 	private ImageButton mPrevButton;
 	private TextView mQuestionTextView;
-	private boolean mIsCheater;
 	
 	private static final String TAG = "QuizActivity";
 	private static final String KEY_INDEX = "index";
+	private static final String KEY_CHEATED = "cheated";
 	
 	private TrueFalse[] mQuestionBank = new TrueFalse[] {
 			new TrueFalse(R.string.question_oceans, true),
@@ -31,6 +31,8 @@ public class QuizActivity extends Activity {
 			new TrueFalse(R.string.question_americas, true),
 			new TrueFalse(R.string.question_asia, true)
 	};
+	
+	private boolean[] mCheatedValues = new boolean[] { false, false, false, false, false};
 	
 	private int mCurrentIndex = 0;
 	
@@ -84,8 +86,7 @@ public class QuizActivity extends Activity {
         	@Override
         	public void onClick(View v) {
         		mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-        		mIsCheater = false;
-        		updateQuestion();
+         		updateQuestion();
         	}
         });
         
@@ -97,13 +98,13 @@ public class QuizActivity extends Activity {
 				if (mCurrentIndex < 0)
 					mCurrentIndex = mQuestionBank.length - 1;
 				
-				mIsCheater = false;
         		updateQuestion();
 			}
 		});
         
         if (savedInstanceState != null) {
         	mCurrentIndex = savedInstanceState.getInt(KEY_INDEX, 0);
+        	mCheatedValues = savedInstanceState.getBooleanArray(KEY_CHEATED);
         }
         updateQuestion();
     }
@@ -144,6 +145,7 @@ public class QuizActivity extends Activity {
     	
     	Log.i(TAG, "onSaveInstanceState");
     	savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+    	savedInstanceState.putBooleanArray(KEY_CHEATED, mCheatedValues);
     }
     
     @Override
@@ -151,7 +153,7 @@ public class QuizActivity extends Activity {
     	if (data == null)
     		return;
     	
-    	mIsCheater = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
+    	mCheatedValues[mCurrentIndex] = data.getBooleanExtra(CheatActivity.EXTRA_ANSWER_SHOWN, false);
     }
     
     @Override
@@ -172,7 +174,7 @@ public class QuizActivity extends Activity {
 		
 		int messageResId = 0;
 		
-		if (mIsCheater) {
+		if (mCheatedValues[mCurrentIndex]) {
 			messageResId = R.string.judgement_toast;
 		} else {
 			if (userPressedTrue == answerIsTrue)

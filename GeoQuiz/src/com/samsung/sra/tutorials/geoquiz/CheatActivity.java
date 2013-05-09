@@ -12,7 +12,10 @@ public class CheatActivity extends Activity {
 	public static final String EXTRA_ANSWER_IS_TRUE = "com.samsung.sra.tutorials.geoquiz.answer_is_true";
 	public static final String EXTRA_ANSWER_SHOWN = "com.samsung.sra.tutorials.geoquiz.answer_shown";
 	
+	private static final String USER_CHEATED = "user_cheated";
+	
 	private boolean mAnswerIsTrue;
+	private boolean mUserCheated = false;
 	private TextView mAnswerTextView;
 	private Button mShowAnswer;
 	
@@ -21,24 +24,42 @@ public class CheatActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cheat);
 		
-		// By default we don't show the user the answer
-		setAnswerShownResult(false);
-		
 		mAnswerIsTrue = getIntent().getBooleanExtra(EXTRA_ANSWER_IS_TRUE, false);
-		
 		mAnswerTextView = (TextView) findViewById(R.id.answerTextView);
 		
 		mShowAnswer = (Button) findViewById(R.id.showAnswerButton);
 		mShowAnswer.setOnClickListener(new View.OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
-				int answer = mAnswerIsTrue ? R.string.true_button : R.string.false_button;	
-				mAnswerTextView.setText(answer);
+				displayAnswer();
+				mUserCheated = true;
 				setAnswerShownResult(true);
 			}
 		});
+		
+		// See if the user has already cheated
+		if (savedInstanceState != null) {
+			mUserCheated = savedInstanceState.getBoolean(USER_CHEATED, false);
+			if (mUserCheated) {
+				displayAnswer();
+			}
+        }
+		
+		setAnswerShownResult(mUserCheated);
 	}
+
+	private void displayAnswer() {
+		int answer = mAnswerIsTrue ? R.string.true_button : R.string.false_button;
+		mAnswerTextView.setText(answer);
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		super.onSaveInstanceState(savedInstanceState);
+		
+		savedInstanceState.putBoolean(USER_CHEATED, mUserCheated);
+	}
+	
 	
 	private void setAnswerShownResult(boolean isAnswerShown) {
 		Intent data = new Intent();
