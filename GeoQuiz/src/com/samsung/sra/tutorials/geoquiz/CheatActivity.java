@@ -2,6 +2,7 @@ package com.samsung.sra.tutorials.geoquiz;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +19,7 @@ public class CheatActivity extends Activity {
 	private boolean mUserCheated = false;
 	private TextView mAnswerTextView;
 	private Button mShowAnswer;
+	private TextView mVersionNumberTextView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,9 @@ public class CheatActivity extends Activity {
 				setAnswerShownResult(true);
 			}
 		});
+		
+		mVersionNumberTextView = (TextView) findViewById(R.id.versionNumberTextView);
+		mVersionNumberTextView.setText("API Level " + Build.VERSION.SDK_INT);
 		
 		// See if the user has already cheated
 		if (savedInstanceState != null) {

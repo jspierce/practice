@@ -26,15 +26,16 @@ public final class R {
         public static final int ic_launcher=0x7f020002;
     }
     public static final class id {
-        public static final int action_settings=0x7f080008;
+        public static final int action_settings=0x7f080009;
         public static final int answerTextView=0x7f080000;
-        public static final int cheat_button=0x7f080005;
-        public static final int false_button=0x7f080004;
-        public static final int next_button=0x7f080007;
-        public static final int prev_button=0x7f080006;
-        public static final int question_text_view=0x7f080002;
+        public static final int cheat_button=0x7f080006;
+        public static final int false_button=0x7f080005;
+        public static final int next_button=0x7f080008;
+        public static final int prev_button=0x7f080007;
+        public static final int question_text_view=0x7f080003;
         public static final int showAnswerButton=0x7f080001;
-        public static final int true_button=0x7f080003;
+        public static final int true_button=0x7f080004;
+        public static final int versionNumberTextView=0x7f080002;
     }
     public static final class layout {
         public static final int activity_cheat=0x7f030000;
@@ -45,6 +46,7 @@ public final class R {
     }
     public static final class string {
         public static final int action_settings=0x7f050001;
+        public static final int actionbar_subtitle=0x7f050011;
         public static final int app_name=0x7f050000;
         public static final int cheat_button=0x7f05000d;
         public static final int correct_toast=0x7f050006;
