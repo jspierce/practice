@@ -1,10 +1,9 @@
 package com.samsung.sra.tutorial.criminalintent;
 
 import android.os.Bundle;
-import android.app.Activity;
-import android.view.Menu;
+import android.support.v4.app.FragmentActivity;
 
-public class CrimeActivity extends Activity {
+public class CrimeActivity extends FragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -12,11 +11,5 @@ public class CrimeActivity extends Activity {
 		setContentView(R.layout.activity_crime);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.crime, menu);
-		return true;
-	}
-
+	
 }
