@@ -1,8 +1,11 @@
 package com.samsung.sra.tutorial.criminalintent;
 
+import java.util.UUID;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.Selection;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -21,11 +24,25 @@ public class CrimeFragment extends Fragment {
 	private Button mDateButton;
 	private CheckBox mSolvedCheckBox;
 	
+	public static final String EXTRA_CRIME_ID = "com.samsung.sra.tutorial.criminalintent.crime_id";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mCrime = new Crime();
+		
+		UUID crimeId = (UUID) getArguments().getSerializable(EXTRA_CRIME_ID);
+		
+		mCrime = CrimeLab.get(getActivity()).getCrime(crimeId);
+	}
+	
+	public static CrimeFragment newInstance(UUID crimeId) {
+		Bundle args = new Bundle();
+		args.putSerializable(EXTRA_CRIME_ID, crimeId);
+		
+		CrimeFragment fragment = new CrimeFragment();
+		fragment.setArguments(args);
+		
+		return fragment;
 	}
 	
 	@Override
@@ -33,6 +50,13 @@ public class CrimeFragment extends Fragment {
 		View v = inflater.inflate(R.layout.fragment_crime, parent, false);
 		
 		mTitleField = (EditText) v.findViewById(R.id.crime_title);
+		mTitleField.setText(mCrime.getTitle());
+		
+		// Set the cursor position at the end of the text
+		int position = mTitleField.length();
+		Editable titleText = mTitleField.getText();
+		Selection.setSelection(titleText, position);
+		
 		mTitleField.addTextChangedListener(new TextWatcher() {
 			public void onTextChanged(CharSequence c, int start, int before, int count) {
 				mCrime.setTitle(c.toString());
