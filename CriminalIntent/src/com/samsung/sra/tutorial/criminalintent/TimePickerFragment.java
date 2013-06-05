@@ -10,9 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.View;
-import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 public class TimePickerFragment extends DialogFragment {
@@ -50,7 +48,7 @@ public class TimePickerFragment extends DialogFragment {
 		
 		return new AlertDialog.Builder(getActivity())
 			.setView(v)
-			.setTitle(R.string.date_picker_title)
+			.setTitle(R.string.time_picker_title)
 			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
