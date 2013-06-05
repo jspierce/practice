@@ -1,6 +1,7 @@
 package com.samsung.sra.tutorial.criminalintent;
 
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 import android.app.Activity;
@@ -26,10 +27,12 @@ public class CrimeFragment extends Fragment {
 	private Crime mCrime;
 	private EditText mTitleField;
 	private Button mDateButton;
+	private Button mTimeButton;
 	private CheckBox mSolvedCheckBox;
 	
 	public static final String EXTRA_CRIME_ID = "com.samsung.sra.tutorial.criminalintent.crime_id";
 	private static final String DIALOG_DATE = "date";
+	private static final String DIALOG_TIME = "time";
 	private static final int REQUEST_DATE = 0;
 	
 	@Override
@@ -78,7 +81,6 @@ public class CrimeFragment extends Fragment {
 		});
 		
 		mDateButton = (Button) v.findViewById(R.id.crime_date);
-		updateDate();
 		mDateButton.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -89,6 +91,18 @@ public class CrimeFragment extends Fragment {
 			}
 		});
 		
+		mTimeButton = (Button) v.findViewById(R.id.crime_time);
+		mTimeButton.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				FragmentManager fm = getActivity().getSupportFragmentManager();
+				TimePickerFragment dialog = TimePickerFragment.newInstance(mCrime.getDate());
+				dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+				dialog.show(fm, DIALOG_TIME);
+			}
+		});
+		updateDateAndTime();
+
 		mSolvedCheckBox = (CheckBox) v.findViewById(R.id.crime_solved);
 		mSolvedCheckBox.setChecked(mCrime.isSolved());
 		mSolvedCheckBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -111,11 +125,13 @@ public class CrimeFragment extends Fragment {
 		if (requestCode == REQUEST_DATE) {
 			Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
 			mCrime.setDate(date);
-			updateDate();
+			updateDateAndTime();
 		}
 	}
 	
-	private void updateDate() {
-		mDateButton.setText(DateFormat.format("EEEE, MMMM dd, yyyy", mCrime.getDate()));
+	private void updateDateAndTime() {
+		Date date = mCrime.getDate();
+		mDateButton.setText(DateFormat.format("EEEE, MMMM dd, yyyy", date));
+		mTimeButton.setText(DateFormat.format("h:mm aa", date));
 	}
 }
