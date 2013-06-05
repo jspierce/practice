@@ -14,12 +14,11 @@ import android.view.View;
 import android.widget.TimePicker;
 
 public class TimePickerFragment extends DialogFragment {
-	public static final String EXTRA_DATE = "com.samsung.sra.criminalintent.date";
 	private Date mDate;
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		mDate = (Date) getArguments().getSerializable(EXTRA_DATE);
+		mDate = (Date) getArguments().getSerializable(CrimeFragment.EXTRA_DATE);
 		
 		// Create a calendar to get the hours, minutes, and seconds
 		Calendar calendar = Calendar.getInstance();
@@ -42,7 +41,7 @@ public class TimePickerFragment extends DialogFragment {
 				mDate = calendar.getTime();
 				
 				// Update argument to preserve selected value on rotation
-				getArguments().putSerializable(EXTRA_DATE, mDate);
+				getArguments().putSerializable(CrimeFragment.EXTRA_DATE, mDate);
 			}
 		});
 		
@@ -60,7 +59,7 @@ public class TimePickerFragment extends DialogFragment {
 	
 	public static TimePickerFragment newInstance(Date date) {
 		Bundle args = new Bundle();
-		args.putSerializable(EXTRA_DATE, date);
+		args.putSerializable(CrimeFragment.EXTRA_DATE, date);
 		TimePickerFragment fragment = new TimePickerFragment();
 		fragment.setArguments(args);
 		
@@ -72,7 +71,7 @@ public class TimePickerFragment extends DialogFragment {
 			return;
 		
 		Intent i = new Intent();
-		i.putExtra(EXTRA_DATE, mDate);
+		i.putExtra(CrimeFragment.EXTRA_DATE, mDate);
 		
 		getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
 	}

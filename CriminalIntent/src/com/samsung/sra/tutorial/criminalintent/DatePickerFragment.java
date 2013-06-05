@@ -16,12 +16,11 @@ import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
 
 public class DatePickerFragment extends DialogFragment {
-		public static final String EXTRA_DATE = "com.samsung.sra.criminalintent.date";
 		private Date mDate;
 		
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			mDate = (Date) getArguments().getSerializable(EXTRA_DATE);
+			mDate = (Date) getArguments().getSerializable(CrimeFragment.EXTRA_DATE);
 			
 			// Create a calendar to get the year, month, and day
 			Calendar calendar = Calendar.getInstance();
@@ -41,7 +40,7 @@ public class DatePickerFragment extends DialogFragment {
 					mDate = new GregorianCalendar(year, monthOfYear, dayOfMonth).getTime();
 					
 					// Update argument to preserve selected value on rotation
-					getArguments().putSerializable(EXTRA_DATE, mDate);
+					getArguments().putSerializable(CrimeFragment.EXTRA_DATE, mDate);
 					
 				}
 			});
@@ -60,7 +59,7 @@ public class DatePickerFragment extends DialogFragment {
 		
 		public static DatePickerFragment newInstance(Date date) {
 			Bundle args = new Bundle();
-			args.putSerializable(EXTRA_DATE, date);
+			args.putSerializable(CrimeFragment.EXTRA_DATE, date);
 			DatePickerFragment fragment = new DatePickerFragment();
 			fragment.setArguments(args);
 			
@@ -72,7 +71,7 @@ public class DatePickerFragment extends DialogFragment {
 				return;
 			
 			Intent i = new Intent();
-			i.putExtra(EXTRA_DATE, mDate);
+			i.putExtra(CrimeFragment.EXTRA_DATE, mDate);
 			
 			getTargetFragment().onActivityResult(getTargetRequestCode(), resultCode, i);
 		}

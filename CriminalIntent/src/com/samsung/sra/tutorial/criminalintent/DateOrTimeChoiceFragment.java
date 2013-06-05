@@ -10,7 +10,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 
 public class DateOrTimeChoiceFragment extends DialogFragment {
-	public static final String EXTRA_DATE = "com.samsung.sra.criminalintent.date";
 	private static final String DIALOG_DATE = "date";
 	private static final String DIALOG_TIME = "time";
 	
@@ -18,7 +17,7 @@ public class DateOrTimeChoiceFragment extends DialogFragment {
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		mDate = (Date) getArguments().getSerializable(EXTRA_DATE);
+		mDate = (Date) getArguments().getSerializable(CrimeFragment.EXTRA_DATE);
 		
 				
 		return new AlertDialog.Builder(getActivity())
@@ -48,7 +47,7 @@ public class DateOrTimeChoiceFragment extends DialogFragment {
 	
 	public static DateOrTimeChoiceFragment newInstance(Date date) {
 		Bundle args = new Bundle();
-		args.putSerializable(EXTRA_DATE, date);
+		args.putSerializable(CrimeFragment.EXTRA_DATE, date);
 		DateOrTimeChoiceFragment fragment = new DateOrTimeChoiceFragment();
 		fragment.setArguments(args);
 		

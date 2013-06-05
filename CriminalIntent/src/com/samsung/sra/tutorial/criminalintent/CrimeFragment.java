@@ -31,6 +31,7 @@ public class CrimeFragment extends Fragment {
 	public static final String EXTRA_CRIME_ID = "com.samsung.sra.tutorial.criminalintent.crime_id";
 	private static final String DIALOG_DATE_TIME_CHOICE = "date time choice";
 	private static final int REQUEST_DATE = 0;
+	public static final String EXTRA_DATE = "com.samsung.sra.criminalintent.date";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -110,7 +111,7 @@ public class CrimeFragment extends Fragment {
 			return;
 		
 		if (requestCode == REQUEST_DATE) {
-			Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
+			Date date = (Date) data.getSerializableExtra(EXTRA_DATE);
 			mCrime.setDate(date);
 			updateDate();
 		}
