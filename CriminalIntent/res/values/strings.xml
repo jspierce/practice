@@ -13,4 +13,9 @@
 	<string name="choose_date_or_time">Edit date or time?</string>
 	<string name="date_choice">Date</string>
 	<string name="time_choice">Time</string>
+	<string name="new_crime">New Crime</string>
+	<string name="show_subtitle">Show Subtitle</string>
+	<string name="hide_subtitle">Hide Subtitle</string>
+	<string name="subtitle">If you see something, say something.</string>
+	<string name="delete_crime">Delete</string>
 </resources>
