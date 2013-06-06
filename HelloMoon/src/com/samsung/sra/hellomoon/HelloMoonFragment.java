@@ -10,26 +10,33 @@ import android.widget.Button;
 public class HelloMoonFragment extends Fragment {
 	private AudioPlayer mPlayer = new AudioPlayer();
 	private Button mPlayPauseButton;
-	private Boolean mPaused = true;
 	private Button mStopButton;
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setRetainInstance(true);
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment_hello_moon, parent, false);
 		
 		mPlayPauseButton = (Button) v.findViewById(R.id.hellomoon_playPauseButton);
+		mPlayer.setPlayButtonAndLabel(mPlayPauseButton, R.string.hellomoon_play);
+		
+		if (mPlayer.isPlaying())
+			mPlayPauseButton.setText(R.string.hellomoon_pause);
+		
 		mPlayPauseButton.setOnClickListener(new View.OnClickListener() {
-			
 			@Override
 			public void onClick(View v) {
-				if (mPaused) {
-					mPlayPauseButton.setText(R.string.hellomoon_pause);
+				if (!mPlayer.isPlaying()) {
 					mPlayer.play(getActivity());
-					mPaused = false;
+					mPlayPauseButton.setText(R.string.hellomoon_pause);
 				} else {
-					mPlayPauseButton.setText(R.string.hellomoon_play);
 					mPlayer.pause();
-					mPaused = true;
+					mPlayPauseButton.setText(R.string.hellomoon_play);
 				}
 					
 			}
@@ -42,7 +49,6 @@ public class HelloMoonFragment extends Fragment {
 			public void onClick(View v) {
 				mPlayer.stop();
 				mPlayPauseButton.setText(R.string.hellomoon_play);
-				mPaused = true;
 			}
 		});
 		
