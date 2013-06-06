@@ -17,7 +17,7 @@
         android:layout_weight="0" >
         
         <Button
-            android:id="@+id/hellomoon_playButton"
+            android:id="@+id/hellomoon_playPauseButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/hellomoon_play" />
