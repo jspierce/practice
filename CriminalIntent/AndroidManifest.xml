@@ -23,7 +23,7 @@
         <activity
             android:name="com.samsung.sra.tutorial.criminalintent.CrimePagerActivity"
             android:label="@string/app_name" >
-            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value=".CrimeListActivity"></meta-data>
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.samsung.sra.tutorial.criminalintent.CrimeListActivity"></meta-data>
         </activity>
     </application>
 
