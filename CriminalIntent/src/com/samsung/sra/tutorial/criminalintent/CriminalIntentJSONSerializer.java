@@ -1,7 +1,10 @@
 package com.samsung.sra.tutorial.criminalintent;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,8 +18,11 @@ import org.json.JSONException;
 import org.json.JSONTokener;
 
 import android.content.Context;
+import android.os.Environment;
+import android.util.Log;
 
 public class CriminalIntentJSONSerializer {
+	private static final String TAG = "CriminalIntentJSONSerializer";
 	private Context mContext;
 	private String mFilename;
 	
@@ -31,7 +37,16 @@ public class CriminalIntentJSONSerializer {
 		
 		try {
 			// Open and read the file into a StringBuilder
-			InputStream in = mContext.openFileInput(mFilename);
+			InputStream in;
+			Log.d(TAG, Environment.getExternalStorageState());
+			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+				File file = new File(mContext.getExternalFilesDir(null), mFilename);
+				in = new FileInputStream(file);
+				Log.d(TAG, "Reading from external file");
+			} else {
+				in = mContext.openFileInput(mFilename);
+				Log.d(TAG, "Reading from internal file");
+			}
 			reader = new BufferedReader(new InputStreamReader(in));
 			StringBuilder jsonString = new StringBuilder();
 			String line = null;
@@ -69,7 +84,17 @@ public class CriminalIntentJSONSerializer {
 		// Write the file to disk
 		Writer writer = null;
 		try {
-			OutputStream out = mContext.openFileOutput(mFilename,  Context.MODE_PRIVATE);
+			OutputStream out;
+			
+			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+				File file = new File(mContext.getExternalFilesDir(null), mFilename);
+				out = new FileOutputStream(file);
+				Log.d(TAG, "Writing to external file");
+			} else {
+				out = mContext.openFileOutput(mFilename,  Context.MODE_PRIVATE);
+				Log.d(TAG, "Writing to internal file");
+			}
+
 			writer = new OutputStreamWriter(out);
 			writer.write(array.toString());
 		} finally {
