@@ -38,7 +38,6 @@ public class CriminalIntentJSONSerializer {
 		try {
 			// Open and read the file into a StringBuilder
 			InputStream in;
-			Log.d(TAG, Environment.getExternalStorageState());
 			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 				File file = new File(mContext.getExternalFilesDir(null), mFilename);
 				in = new FileInputStream(file);
@@ -88,8 +87,8 @@ public class CriminalIntentJSONSerializer {
 			
 			if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
 				File file = new File(mContext.getExternalFilesDir(null), mFilename);
+				Log.d(TAG, "Writing to external file " + file);
 				out = new FileOutputStream(file);
-				Log.d(TAG, "Writing to external file");
 			} else {
 				out = mContext.openFileOutput(mFilename,  Context.MODE_PRIVATE);
 				Log.d(TAG, "Writing to internal file");
