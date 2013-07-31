@@ -6,9 +6,11 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
     
     <application
         android:allowBackup="true"
@@ -26,6 +28,11 @@
             android:name="com.samsung.sra.tutorial.criminalintent.CrimePagerActivity"
             android:label="@string/app_name" >
             <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.samsung.sra.tutorial.criminalintent.CrimeListActivity"></meta-data>
+        </activity>
+        <activity
+            android:name="com.samsung.sra.tutorial.criminalintent.CrimeCameraActivity"
+            android:screenOrientation="landscape"
+            android:label="@string/app_name">
         </activity>
     </application>
 
