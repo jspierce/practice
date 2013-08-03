@@ -29,6 +29,7 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 public class CrimeFragment extends Fragment {
 	private Crime mCrime;
@@ -36,6 +37,7 @@ public class CrimeFragment extends Fragment {
 	private Button mDateButton;
 	private CheckBox mSolvedCheckBox;
 	private ImageButton mPhotoButton;
+	private ImageView mPhotoView;
 	
 	private static final String TAG = "CrimeFragment";
 	public static final String EXTRA_CRIME_ID = "com.samsung.sra.tutorial.criminalintent.crime_id";
@@ -135,6 +137,8 @@ public class CrimeFragment extends Fragment {
 			mPhotoButton.setEnabled(false);
 		}
 		
+		mPhotoView = (ImageView) v.findViewById(R.id.crime_imageView);
+		
 		return v;
 	}
 	
@@ -188,7 +192,10 @@ public class CrimeFragment extends Fragment {
 			// Create a new Photo object and attach it to the crime
 			String filename = data.getStringExtra(CrimeCameraFragment.EXTRA_PHOTO_FILENAME);
 			if (filename != null) {
-				Log.i(TAG, "filename: " + filename);
+				
+				Photo p = new Photo(filename);
+				mCrime.setPhoto(p);
+				Log.i(TAG, "Crime " + mCrime.getTitle() + " has photo " + filename);
 			}
 		}
 	}
