@@ -42,6 +42,7 @@ public class CrimeFragment extends Fragment {
 	private static final String TAG = "CrimeFragment";
 	public static final String EXTRA_CRIME_ID = "com.samsung.sra.tutorial.criminalintent.crime_id";
 	private static final String DIALOG_DATE_TIME_CHOICE = "date time choice";
+	private static final String DIALOG_IMAGE = "image";
 	private static final int REQUEST_DATE = 0;
 	public static final String EXTRA_DATE = "com.samsung.sra.criminalintent.date";
 	private static final int REQUEST_PHOTO = 1;
@@ -138,6 +139,19 @@ public class CrimeFragment extends Fragment {
 		}
 		
 		mPhotoView = (ImageView) v.findViewById(R.id.crime_imageView);
+		mPhotoView.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Photo p = mCrime.getPhoto();
+				if (p == null)
+					return;
+				
+				FragmentManager fm = getActivity().getSupportFragmentManager();
+				String path = getActivity().getFileStreamPath(p.getFilename()).getAbsolutePath();
+				ImageFragment.newInstance(path).show(fm, DIALOG_IMAGE);
+			}
+		});
 		
 		return v;
 	}
