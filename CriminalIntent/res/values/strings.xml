@@ -24,4 +24,6 @@
 	<string name="report_crime_label">Report a crime</string>
 	<string name="camera_accessibility_label">Camera</string>
 	<string name="photo_accessibility_label">Crime photo</string>
+	<string name="crime_suspect_text">Choose Suspect</string>
+	<string name="crime_report_text">Send Crime Report</string>
 </resources>
