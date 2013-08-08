@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.Display;
+import android.widget.ImageView;
 
 public class PictureUtils {
 	/** Get a BitmapDrawable from a local file that is scaled down to fit the current Window size.
@@ -25,16 +26,28 @@ public class PictureUtils {
 		float srcHeight = options.outHeight;
 		
 		int inSampleSize = 1;
+		if (srcHeight > destHeight || srcWidth > destWidth) {
+			if (srcWidth > srcHeight) {
+				inSampleSize = Math.round(srcWidth / destWidth);
+			} else {
+				inSampleSize = Math.round(srcHeight / destHeight);
+			}
+		}
 		
 		options = new BitmapFactory.Options();
 		options.inSampleSize = inSampleSize;
 		
-		if (srcHeight > destHeight || srcWidth > destWidth) {
-			inSampleSize = Math.round(srcHeight / destHeight);
-		} else {
-			inSampleSize = Math.round(srcWidth / destWidth);
-		}
 		Bitmap bitmap = BitmapFactory.decodeFile(path, options);
 		return new BitmapDrawable(a.getResources(), bitmap);
+	}
+	
+	public static void cleanImageView(ImageView imageView) {
+		if (!(imageView.getDrawable() instanceof BitmapDrawable))
+			return;
+		
+		// Clean up the view's image for the sake of memory
+		BitmapDrawable b = (BitmapDrawable) imageView.getDrawable();
+		b.getBitmap().recycle();
+		imageView.setImageDrawable(null);
 	}
 }
