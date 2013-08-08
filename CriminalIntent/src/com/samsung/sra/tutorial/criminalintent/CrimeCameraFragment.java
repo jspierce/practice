@@ -10,12 +10,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.Camera;
+import android.hardware.Camera.CameraInfo;
+import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.OrientationEventListener;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -29,6 +32,7 @@ public class CrimeCameraFragment extends Fragment {
 	private Camera mCamera;
 	private SurfaceView mSurfaceView;
 	private View mProgressContainer;
+	private OrientationEventListener mOrientationListener;
 	
 	private Camera.ShutterCallback mShutterCallback = new Camera.ShutterCallback() {
 		
@@ -43,6 +47,10 @@ public class CrimeCameraFragment extends Fragment {
 		
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
+			// Get the window orientation, since the S3 seems to always set the orientation as normal in the EXIF data
+			int windowOrientation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
+			Log.d(TAG, "Window orientation is " + windowOrientation);
+			
 			// Create a filename
 			String filename = UUID.randomUUID().toString() + ".jpg";
 			
@@ -94,6 +102,42 @@ public class CrimeCameraFragment extends Fragment {
 		
 		return bestSize;
 	}
+	
+	@Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+       super.onActivityCreated(savedInstanceState);
+       
+       
+       mOrientationListener = new OrientationEventListener(getActivity()) {
+    	   @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+    	   @Override
+    	    public void onOrientationChanged(int orientation) {
+    		   Log.d(TAG, "New orientation " + orientation);
+    		   
+    		   if (orientation == ORIENTATION_UNKNOWN || mCamera == null)
+                   return;
+    		   
+    		   if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD)
+                   return;
+    		   
+    		   CameraInfo info = new CameraInfo();
+               Camera.getCameraInfo(0, info);
+               orientation = ((orientation + 45) / 90) * 90;
+               Log.d(TAG, "Tweaked orientation " + orientation);
+               int rotation = 0;
+               if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
+                  rotation = (info.orientation - orientation + 360) % 360;
+               } else { // back-facing camera
+                  rotation = (info.orientation + orientation) % 360;
+               }
+               Parameters params = mCamera.getParameters();
+               params.setRotation(rotation);
+               Log.d(TAG, "Setting camera rotation to " + rotation);
+               mCamera.setParameters(params);
+    	   }
+       };
+	}
+       
 	
 	@Override
 	@SuppressWarnings("deprecation")
@@ -172,6 +216,8 @@ public class CrimeCameraFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		
+	    mOrientationListener.enable();
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
 			mCamera = Camera.open(0);
 		} else {
@@ -182,6 +228,8 @@ public class CrimeCameraFragment extends Fragment {
 	@Override
 	public void onPause() {
 		super.onPause();
+		
+		mOrientationListener.disable();
 		
 		if (mCamera != null) {
 			mCamera.release();
