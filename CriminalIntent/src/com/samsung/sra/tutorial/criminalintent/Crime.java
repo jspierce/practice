@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
+
 public class Crime {
 	
 	private UUID mId;
@@ -84,12 +86,21 @@ public class Crime {
 		return mPhoto;
 	}
 	
-	public void setPhoto(Photo photo) {
+	public void setPhoto(Photo photo, Context context) {
+		// If we already have a photo delete the previous one
+		if (mPhoto != null) {
+			mPhoto.delete(context);
+		}
+		
 		mPhoto = photo;
 	}
 	
 	@Override
 	public String toString() {
 		return mTitle;
+	}
+	
+	public void delete(Context appContext) {
+		setPhoto(null, appContext);
 	}
 }

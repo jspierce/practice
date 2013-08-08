@@ -43,6 +43,8 @@ public class CrimeLab {
 	
 	public void deleteCrime(Crime c) {
 		mCrimes.remove(c);
+		
+		c.delete(mAppContext);
 	}
 	
 	public ArrayList<Crime> getCrimes() {

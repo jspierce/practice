@@ -123,7 +123,7 @@ public class CrimeCameraFragment extends Fragment {
     		   CameraInfo info = new CameraInfo();
                Camera.getCameraInfo(0, info);
                orientation = ((orientation + 45) / 90) * 90;
-               Log.d(TAG, "Tweaked orientation " + orientation);
+               //Log.d(TAG, "Tweaked orientation " + orientation);
                int rotation = 0;
                if (info.facing == CameraInfo.CAMERA_FACING_FRONT) {
                   rotation = (info.orientation - orientation + 360) % 360;
@@ -132,7 +132,7 @@ public class CrimeCameraFragment extends Fragment {
                }
                Parameters params = mCamera.getParameters();
                params.setRotation(rotation);
-               Log.d(TAG, "Setting camera rotation to " + rotation);
+               //Log.d(TAG, "Setting camera rotation to " + rotation);
                mCamera.setParameters(params);
     	   }
        };

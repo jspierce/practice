@@ -19,6 +19,7 @@
 	<string name="subtitle">If you see something, say something.</string>
 	<string name="take">Take</string>
 	<string name="delete_crime">Delete</string>
+	<string name="delete_photo">Delete</string>
 	<string name="no_crimes_text">There aren\'t any currently reported crimes.</string>
 	<string name="report_crime_label">Report a crime</string>
 	<string name="camera_accessibility_label">Camera</string>
