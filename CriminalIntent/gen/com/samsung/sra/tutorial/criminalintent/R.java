@@ -68,7 +68,13 @@ public final class R {
         public static final int camera_accessibility_label=0x7f060015;
         public static final int choose_date_or_time=0x7f060009;
         public static final int crime_details_label=0x7f060005;
+        public static final int crime_report=0x7f060019;
+        public static final int crime_report_no_suspect=0x7f06001d;
+        public static final int crime_report_solved=0x7f06001a;
+        public static final int crime_report_subject=0x7f06001e;
+        public static final int crime_report_suspect=0x7f06001c;
         public static final int crime_report_text=0x7f060018;
+        public static final int crime_report_unsolved=0x7f06001b;
         public static final int crime_solved_label=0x7f060006;
         public static final int crime_suspect_text=0x7f060017;
         public static final int crime_title_hint=0x7f060003;
@@ -83,6 +89,7 @@ public final class R {
         public static final int no_crimes_text=0x7f060013;
         public static final int photo_accessibility_label=0x7f060016;
         public static final int report_crime_label=0x7f060014;
+        public static final int send_report=0x7f06001f;
         public static final int show_subtitle=0x7f06000d;
         public static final int subtitle=0x7f06000f;
         public static final int take=0x7f060010;
