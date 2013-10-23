@@ -16,6 +16,7 @@ public class Crime {
 	private boolean mSolved;
 	private Photo mPhoto;
 	private String mSuspect;
+	private String mSuspectPhone;
 	
 	private static final String JSON_ID = "id";
 	private static final String JSON_TITLE = "title";
@@ -23,6 +24,7 @@ public class Crime {
 	private static final String JSON_DATE = "date";
 	private static final String JSON_PHOTO = "photo";
 	private static final String JSON_SUSPECT = "suspect";
+	private static final String JSON_SUSPECT_PHONE = "suspect_phone";
 	
 	
 	public Crime() {
@@ -43,6 +45,9 @@ public class Crime {
 		
 		if (json.has(JSON_SUSPECT))
 			mSuspect = json.getString(JSON_SUSPECT);
+		
+		if (json.has(JSON_SUSPECT_PHONE))
+			mSuspectPhone = json.getString(JSON_SUSPECT_PHONE);
 	}
 	
 	
@@ -57,7 +62,10 @@ public class Crime {
 			json.put(JSON_PHOTO, mPhoto.toJSON());
 		
 		if (mSuspect != null)
-			json.put(JSON_SUSPECT, mPhoto.toJSON());
+			json.put(JSON_SUSPECT, mSuspect);
+		
+		if (mSuspectPhone != null)
+			json.put(JSON_SUSPECT_PHONE, mSuspectPhone);
 		
 		return json;
 	}
@@ -109,6 +117,14 @@ public class Crime {
 	
 	public void setSuspect(String suspect) {
 		mSuspect = suspect;
+	}
+	
+	public String getSuspectPhone() {
+		return mSuspectPhone;
+	}
+	
+	public void setSuspectPhone(String suspectPhone) {
+		mSuspectPhone = suspectPhone;
 	}
 	
 	@Override
