@@ -222,6 +222,10 @@ public class CrimeListFragment extends ListFragment {
 		mCallbacks.onCrimeSelected(crime);
 	}
 	
+	public void updateUI() {
+		((CrimeAdapter) getListAdapter()).notifyDataSetChanged();
+	}
+	
 	// Private list adapter class for providing list item views
 	private class CrimeAdapter extends ArrayAdapter<Crime> {
 		

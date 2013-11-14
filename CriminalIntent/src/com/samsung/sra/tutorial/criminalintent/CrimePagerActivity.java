@@ -11,7 +11,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 
-public class CrimePagerActivity extends FragmentActivity {
+public class CrimePagerActivity extends FragmentActivity implements CrimeFragment.Callbacks {
 	private ViewPager mViewPager;
 	private ArrayList<Crime> mCrimes;
 	
@@ -68,5 +68,11 @@ public class CrimePagerActivity extends FragmentActivity {
 				break;
 			}
 		}
+	}
+
+	@Override
+	public void onCrimeUpdated(Crime crime) {
+		// This method doesn't need to do anything
+		
 	}
 }

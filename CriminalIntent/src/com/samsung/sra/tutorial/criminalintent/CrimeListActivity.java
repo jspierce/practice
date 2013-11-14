@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
-public class CrimeListActivity extends SingleFragmentActivity implements CrimeListFragment.Callbacks {
+public class CrimeListActivity extends SingleFragmentActivity implements CrimeListFragment.Callbacks, CrimeFragment.Callbacks {
 
 	@Override
 	protected Fragment createFragment() {
@@ -37,5 +37,12 @@ public class CrimeListActivity extends SingleFragmentActivity implements CrimeLi
 			ft.commit();
 		}
 		
+	}
+
+	@Override
+	public void onCrimeUpdated(Crime crime) {
+		FragmentManager fm = getSupportFragmentManager();
+		CrimeListFragment listFragment = (CrimeListFragment) fm.findFragmentById(R.id.fragmentContainer);
+		listFragment.updateUI();
 	}
 }
