@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class SLauncherFragment extends ListFragment {
@@ -54,5 +56,20 @@ public class SLauncherFragment extends ListFragment {
 		
 		// Then set the list adapter to be it
 		setListAdapter(adapter);
+	}
+	
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		ResolveInfo resolveInfo = (ResolveInfo) l.getAdapter().getItem(position);
+		ActivityInfo activityInfo = resolveInfo.activityInfo;
+		
+		// If the user didn't select anything just return
+		if (activityInfo == null) return;
+		
+		// Create an explicit Intent to launch the selected activity
+		Intent i = new Intent(Intent.ACTION_MAIN);
+		i.setClassName(activityInfo.applicationInfo.packageName, activityInfo.name);
+		
+		startActivity(i);
 	}
 }
