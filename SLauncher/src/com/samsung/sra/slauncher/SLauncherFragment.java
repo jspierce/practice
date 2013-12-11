@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -41,15 +42,21 @@ public class SLauncherFragment extends ListFragment {
 		});
 		
 		// Create an ArrayAdapter that creates simple list item views for the activity labels
-		ArrayAdapter<ResolveInfo> adapter = new ArrayAdapter<ResolveInfo>(getActivity(), android.R.layout.simple_list_item_1, activities) {
-			public View getView(int pos, View concertView, ViewGroup parent) {
-				View v = super.getView(pos, concertView, parent);
+		ArrayAdapter<ResolveInfo> adapter = new ArrayAdapter<ResolveInfo>(getActivity(), R.layout.list_item_launcher, R.id.activityLabel, activities) {
+			public View getView(int pos, View convertView, ViewGroup parent) {
+				View v = super.getView(pos, convertView, parent);
 				PackageManager pm = getActivity().getPackageManager();
 				
-				// Documentation says that simple_list_item_1 is a TextView, so cast it so that we can set the text value
-				TextView tv = (TextView) v;
+				// Set the list item's text view to include the activity label
+				TextView tv = (TextView) v.findViewById(R.id.activityLabel);
 				ResolveInfo ri = getItem(pos);
 				tv.setText(ri.loadLabel(pm));
+				
+				// Set the list item's image view to include the activity icon
+				ImageView iv = (ImageView) v.findViewById(R.id.activityIcon);
+				iv.setImageDrawable(ri.loadIcon(pm));
+				
+				// Return the view
 				return v;
 			}
 		};
