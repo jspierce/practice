@@ -10,7 +10,11 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.NavUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -24,6 +28,7 @@ public class SLauncherFragment extends ListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
 		
 		Intent startupIntent = new Intent(Intent.ACTION_MAIN);
 		startupIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -65,6 +70,7 @@ public class SLauncherFragment extends ListFragment {
 		setListAdapter(adapter);
 	}
 	
+	
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		ResolveInfo resolveInfo = (ResolveInfo) l.getAdapter().getItem(position);
@@ -78,5 +84,35 @@ public class SLauncherFragment extends ListFragment {
 		i.setClassName(activityInfo.applicationInfo.packageName, activityInfo.name);
 		i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(i);
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.fragment_slauncher, menu);		
+	}
+
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case android.R.id.home :
+				if (NavUtils.getParentActivityIntent(getActivity()) != null) {
+					NavUtils.navigateUpFromSameTask(getActivity());
+				}
+				return true;
+				
+			case R.id.menu_item_show_tasks:
+				Log.d(TAG, "Show tasks");
+				
+				// Start an instance of STasksActivity
+				Intent i = new Intent(getActivity(), STasksActivity.class);
+				startActivity(i);
+				
+				return true;
+				
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 }
