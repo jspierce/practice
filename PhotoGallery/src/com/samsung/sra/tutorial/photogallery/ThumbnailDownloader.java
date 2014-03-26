@@ -11,13 +11,16 @@ import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
+import android.support.v4.util.LruCache;
 import android.util.Log;
 import android.widget.ImageView;
 
 public class ThumbnailDownloader<Token> extends HandlerThread {
 	private static final String TAG = "ThumbnailDownloader";
 	private static final int MESSAGE_DOWNLOAD = 0;
+	private static final int MAX_CACHE_SIZE = 20;
 	
+	LruCache<String,Bitmap> mThumbnailCache;
 	Handler mHandler;
 	Map<Token, String> requestMap = Collections.synchronizedMap(new HashMap<Token, String>());
 	Handler mResponseHandler;
@@ -32,6 +35,7 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
 		super(TAG);
 		
 		mResponseHandler = responseHandler;
+		mThumbnailCache = new LruCache<String, Bitmap>(MAX_CACHE_SIZE);
 	}
 	
 	@SuppressLint("HandlerLeak")
@@ -56,8 +60,20 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
 	
 	public void queueThumbnail(Token token, String url) {
 		Log.i(TAG, "Got a URL:" + url);
-		requestMap.put(token, url);
-		mHandler.obtainMessage(MESSAGE_DOWNLOAD, token).sendToTarget();
+		
+		// Check if the cache already has a bitmap for the url
+		Bitmap bitmap = mThumbnailCache.get(url);
+		if (bitmap == null) {
+			// If it doesn't, queue a message requesting the bitmap
+			Log.d(TAG, "Cache miss");
+			requestMap.put(token, url);
+			mHandler.obtainMessage(MESSAGE_DOWNLOAD, token).sendToTarget();
+		} else {
+			// If it does, set the thumbnail (we should be on the UI thread, so no special call should be necessary)
+			Log.d(TAG, "Cache hit");
+			mListener.onThumbnailDownloaded(token, bitmap);
+		}
+		
 	}
 	
 	public void clearQueue() {
@@ -109,6 +125,9 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
 		    final Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
 		    	    
 			Log.i(TAG, "Bitmap created");
+			
+			// Add the bitmap to our queue
+			mThumbnailCache.put(url, bitmap);
 			
 			// Create a runnable to set the imageview's bitmap on the UI thread
 			mResponseHandler.post(new Runnable() {
