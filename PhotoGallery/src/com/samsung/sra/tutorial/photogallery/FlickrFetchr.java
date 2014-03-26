@@ -20,6 +20,7 @@ import android.widget.Toast;
 public class FlickrFetchr {
 	private static final String TAG = "FlickrFetchr";
 	public static final String PREF_SEARCH_QUERY = "searchQuery";
+	public static final String PREF_LAST_RESULT_ID = "lastResultID";
 	
 	private static final String ENDPOINT = "http://api.flickr.com/services/rest/";
 	private static final String AppProInt_Code = "93a7f095d43d5ae04d828284e0ac3a25";
