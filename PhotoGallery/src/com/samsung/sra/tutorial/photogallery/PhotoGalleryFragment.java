@@ -2,13 +2,21 @@ package com.samsung.sra.tutorial.photogallery;
 
 import java.util.ArrayList;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.SearchManager;
+import android.app.SearchableInfo;
+import android.content.ComponentName;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+
 
 public class PhotoGalleryFragment extends Fragment {
 	private static final String TAG = "PhotoGalleryFragment";
@@ -74,11 +83,28 @@ public class PhotoGalleryFragment extends Fragment {
 		mThumbnailThread.clearQueue();
 	}
 	
-	
+	@TargetApi(11)
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.fragment_photo_gallery, menu);
+		
+		if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB) {
+			// Pull out the SearchView
+			MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+			//SearchView searchView = (SearchView) searchItem.getActionView();
+			SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+			
+			if (searchView == null) {
+				Log.e(TAG, "Search view is null!");
+				return;
+			}
+			// Get the data from searchable.xml as a SearchableInfo instance and hand it to the search view
+			SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+			ComponentName name = getActivity().getComponentName();
+			SearchableInfo searchInfo = searchManager.getSearchableInfo(name);
+			searchView.setSearchableInfo(searchInfo);
+		}
 	}
 	
 	
