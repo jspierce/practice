@@ -21,8 +21,10 @@ public class FlickrFetchr {
 	private static final String ENDPOINT = "http://api.flickr.com/services/rest/";
 	private static final String AppProInt_Code = "93a7f095d43d5ae04d828284e0ac3a25";
 	private static final String METHOD_GET_RECENT = "flickr.photos.getRecent";
+	private static final String METHOD_SEARCH = "flickr.photos.search";
 	private static final String PARAM_EXTRAS = "extras";
 	private static final String EXTRA_SMALL_URL = "url_s";
+	private static final String PARAM_TEXT = "text";
 	
 	private static final String XML_PHOTO = "photo";
 	
@@ -75,14 +77,10 @@ public class FlickrFetchr {
 		}
 	}
 	
-	public ArrayList<GalleryItem> fetchItems() {
+	public ArrayList<GalleryItem> downloadGalleryItems(String url) {
 		ArrayList<GalleryItem> items = new ArrayList<GalleryItem>();
 		
 		try {
-			String url = Uri.parse(ENDPOINT).buildUpon().appendQueryParameter("method", METHOD_GET_RECENT)
-														.appendQueryParameter("api_key", AppProInt_Code)
-														.appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
-														.build().toString();
 			String xmlString = getUrl(url);
 			Log.i(TAG, "Received xml: " + xmlString);
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -97,4 +95,25 @@ public class FlickrFetchr {
 		
 		return items;
 	}
+	
+	
+	public ArrayList<GalleryItem> fetchItems() {
+		String url = Uri.parse(ENDPOINT).buildUpon().appendQueryParameter("method", METHOD_GET_RECENT)
+				.appendQueryParameter("api_key", AppProInt_Code)
+				.appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
+				.build().toString();
+		
+		return downloadGalleryItems(url);
+	}
+	
+	public ArrayList<GalleryItem> search(String query) {
+		String url = Uri.parse(ENDPOINT).buildUpon().appendQueryParameter("method", METHOD_SEARCH)
+				.appendQueryParameter("api_key", AppProInt_Code)
+				.appendQueryParameter(PARAM_EXTRAS, EXTRA_SMALL_URL)
+				.appendQueryParameter(PARAM_TEXT, query)
+				.build().toString();
+		
+		return downloadGalleryItems(url);
+	}
+			
 }
