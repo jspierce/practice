@@ -20,9 +20,18 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
 	
 	Handler mHandler;
 	Map<Token, String> requestMap = Collections.synchronizedMap(new HashMap<Token, String>());
+	Handler mResponseHandler;
+	Listener<Token> mListener;
 	
-	public ThumbnailDownloader() {
+	public interface Listener<Token> {
+		void onThumbnailDownloaded(Token token, Bitmap thumbnail);
+	}
+	
+	
+	public ThumbnailDownloader(Handler responseHandler) {
 		super(TAG);
+		
+		mResponseHandler = responseHandler;
 	}
 	
 	@SuppressLint("HandlerLeak")
@@ -41,11 +50,19 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
 		};
 	}
 	
+	public void setListener(Listener<Token> listener) {
+		mListener = listener;
+	}
 	
 	public void queueThumbnail(Token token, String url) {
 		Log.i(TAG, "Got a URL:" + url);
 		requestMap.put(token, url);
 		mHandler.obtainMessage(MESSAGE_DOWNLOAD, token).sendToTarget();
+	}
+	
+	public void clearQueue() {
+		mHandler.removeMessages(MESSAGE_DOWNLOAD);
+		requestMap.clear();
 	}
 	
 	private static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -83,6 +100,8 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
 
 		    // Calculate the inSampleSize to sample at (results in a lower memory requirement)
 		    ImageView imageView = (ImageView) token;
+		    if (imageView == null)
+		    	return;
 		    options.inSampleSize = calculateInSampleSize(options, imageView.getWidth(), imageView.getHeight());
 
 		    // Decode bitmap with inSampleSize set
@@ -90,6 +109,19 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
 		    final Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);
 		    	    
 			Log.i(TAG, "Bitmap created");
+			
+			// Create a runnable to set the imageview's bitmap on the UI thread
+			mResponseHandler.post(new Runnable() {
+				public void run() {
+					// Make sure the imageView is still associated with this url
+					if (requestMap.get(token) != url)
+						return;
+					
+					requestMap.remove(token);
+					mListener.onThumbnailDownloaded(token, bitmap);
+				}
+			});
+			
 		} catch (IOException ioe) {
 			Log.e(TAG, "Error downloading image", ioe);
 		}
