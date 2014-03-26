@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 public class PhotoGalleryFragment extends Fragment {
@@ -95,15 +96,34 @@ public class PhotoGalleryFragment extends Fragment {
 			//SearchView searchView = (SearchView) searchItem.getActionView();
 			SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 			
-			if (searchView == null) {
-				Log.e(TAG, "Search view is null!");
-				return;
-			}
 			// Get the data from searchable.xml as a SearchableInfo instance and hand it to the search view
 			SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
 			ComponentName name = getActivity().getComponentName();
 			SearchableInfo searchInfo = searchManager.getSearchableInfo(name);
 			searchView.setSearchableInfo(searchInfo);
+			
+			// Now set a listener so we can detect when the user closes the search view		
+			searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+				
+				@Override
+				public boolean onClose() {
+					Activity activity = getActivity();
+					String query = PreferenceManager.getDefaultSharedPreferences(activity).getString(FlickrFetchr.PREF_SEARCH_QUERY, null);
+					if (query != null) {
+						PreferenceManager.getDefaultSharedPreferences(activity)
+							.edit()
+							.putString(FlickrFetchr.PREF_SEARCH_QUERY, null)
+							.commit();
+						updateItems();
+					}
+					
+					return false;
+				}
+			});
+			
+			// And hide the menu close button, since the search view provides one
+			MenuItem searchClearItem = menu.findItem(R.id.menu_item_clear);
+			searchClearItem.setVisible(false);
 		}
 	}
 	
@@ -154,7 +174,7 @@ public class PhotoGalleryFragment extends Fragment {
 			
 			String query = PreferenceManager.getDefaultSharedPreferences(activity).getString(FlickrFetchr.PREF_SEARCH_QUERY, null);
 			if (query != null) {
-				return new FlickrFetchr().search(query);
+				return new FlickrFetchr(getActivity()).search(query);
 			} else {
 				return new FlickrFetchr().fetchItems();
 			}
@@ -163,10 +183,26 @@ public class PhotoGalleryFragment extends Fragment {
 		@Override
 		protected void onPostExecute(ArrayList<GalleryItem> items) {
 			mItems = items;
+						
 			setupAdapter();
 		}
 	}
 	
+	
+	protected class ToastMessageTask extends AsyncTask<String, String, String> {
+
+	    @Override
+	    protected String doInBackground(String... params) {
+	        return params[0];
+	    }
+
+
+	    protected void onPostExecute(String result){
+	           Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+	    }
+	}
+	
+	    
 	private class GalleryItemAdapter extends ArrayAdapter<GalleryItem> {
 		public GalleryItemAdapter(ArrayList<GalleryItem> items) {
 			super(getActivity(), 0, items);
@@ -182,7 +218,10 @@ public class PhotoGalleryFragment extends Fragment {
 			imageView.setImageResource(R.drawable.placeholder_image);
 			
 			GalleryItem item = getItem(position);
-			mThumbnailThread.queueThumbnail(imageView, item.getUrl());
+			
+			String url = item.getUrl();
+			if (url != null)
+				mThumbnailThread.queueThumbnail(imageView, item.getUrl());
 			
 			return convertView;
 		}

@@ -47,7 +47,8 @@ public class PhotoGalleryActivity extends ActionBarActivity {
 		
 		fragment.updateItems();
 	}
-
+	
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will

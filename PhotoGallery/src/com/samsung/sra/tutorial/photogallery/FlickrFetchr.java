@@ -12,8 +12,10 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import android.app.Activity;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 public class FlickrFetchr {
 	private static final String TAG = "FlickrFetchr";
@@ -28,6 +30,17 @@ public class FlickrFetchr {
 	private static final String PARAM_TEXT = "text";
 	
 	private static final String XML_PHOTO = "photo";
+	private static final String XML_PHOTOS = "photos";
+	
+	private Activity mToastActivity;
+	
+	public FlickrFetchr(Activity activity) {
+		mToastActivity = activity;
+	}
+	
+	public FlickrFetchr() {
+		mToastActivity = null;
+	}
 	
 	protected byte[] getUrlBytes(String urlSpec) throws IOException {
 		URL url = new URL(urlSpec);
@@ -62,16 +75,31 @@ public class FlickrFetchr {
 		int eventType = parser.next();
 		
 		while (eventType != XmlPullParser.END_DOCUMENT) {
-			if (eventType == XmlPullParser.START_TAG && XML_PHOTO.equals(parser.getName())) {
-				String id = parser.getAttributeValue(null, "id");
-				String caption = parser.getAttributeValue(null, "title");
-				String smallUrl = parser.getAttributeValue(null, EXTRA_SMALL_URL);
-				
-				GalleryItem item = new GalleryItem();
-				item.setId(id);
-				item.setCaption(caption);
-				item.setUrl(smallUrl);
-				items.add(item);
+			if (eventType == XmlPullParser.START_TAG) {
+				String tagName = parser.getName();
+				if (XML_PHOTO.equals(tagName)) {
+					// If this is a photo get its attributes
+					String id = parser.getAttributeValue(null, "id");
+					String caption = parser.getAttributeValue(null, "title");
+					String smallUrl = parser.getAttributeValue(null, EXTRA_SMALL_URL);
+					
+					GalleryItem item = new GalleryItem();
+					item.setId(id);
+					item.setCaption(caption);
+					item.setUrl(smallUrl);
+					items.add(item);
+				} else if (XML_PHOTOS.equals(tagName)) {
+					// If it's information about the photos and we have an activity, generate a Toast on the UI thread showing the number of total results
+					// <photos page="1" pages="34558" perpage="100" total="3455794">
+					final String totalCount = parser.getAttributeValue(null, "total");
+					if (mToastActivity != null) {
+						mToastActivity.runOnUiThread(new Runnable() {
+							public void run() {
+								Toast.makeText(mToastActivity, totalCount + " photos found", Toast.LENGTH_SHORT).show();
+							}
+						});
+					}
+				}		
 			}
 			
 			eventType = parser.next();
@@ -87,6 +115,7 @@ public class FlickrFetchr {
 			XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
 			XmlPullParser parser = factory.newPullParser();
 			parser.setInput(new StringReader(xmlString));
+			
 			parseItems(items, parser);
 		} catch (IOException ioe) {
 			Log.e(TAG, "Failed to fetch items", ioe);

@@ -61,6 +61,7 @@ public class ThumbnailDownloader<Token> extends HandlerThread {
 	public void queueThumbnail(Token token, String url) {
 		Log.i(TAG, "Got a URL:" + url);
 		
+		
 		// Check if the cache already has a bitmap for the url
 		Bitmap bitmap = mThumbnailCache.get(url);
 		if (bitmap == null) {
