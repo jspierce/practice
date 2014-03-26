@@ -19,7 +19,7 @@ public class FlickrFetchr {
 	private static final String TAG = "FlickrFetchr";
 	
 	private static final String ENDPOINT = "http://api.flickr.com/services/rest/";
-	private static final String AppProInt_Code = "<code here>";
+	private static final String AppProInt_Code = "93a7f095d43d5ae04d828284e0ac3a25";
 	private static final String METHOD_GET_RECENT = "flickr.photos.getRecent";
 	private static final String PARAM_EXTRAS = "extras";
 	private static final String EXTRA_SMALL_URL = "url_s";
