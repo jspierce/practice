@@ -2,7 +2,9 @@ package com.samsung.sra.tutorial.photogallery;
 
 import java.util.ArrayList;
 
+import android.app.AlarmManager;
 import android.app.IntentService;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +14,8 @@ import android.util.Log;
 
 public class PollService extends IntentService {
 	private static final String TAG = "PollService";
+	
+	private static final int POLL_INTERVAL = 1000 * 15;	// 15 seconds
 	
 	public PollService() {
 		super(TAG);
@@ -52,4 +56,17 @@ public class PollService extends IntentService {
 			.commit();
 	}
 
+	public static void setServiceAlarm(Context context, boolean turnOn) {
+		Intent i = new Intent(context, PollService.class);
+		PendingIntent pi = PendingIntent.getService(context, 0, i, 0);
+		
+		AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+		
+		if (turnOn) {
+			alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), POLL_INTERVAL, pi);
+		} else {
+			alarmManager.cancel(pi);
+			pi.cancel();
+		}
+	}
 }
