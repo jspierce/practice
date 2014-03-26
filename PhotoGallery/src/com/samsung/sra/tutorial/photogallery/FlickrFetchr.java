@@ -17,6 +17,7 @@ import android.util.Log;
 
 public class FlickrFetchr {
 	private static final String TAG = "FlickrFetchr";
+	public static final String PREF_SEARCH_QUERY = "searchQuery";
 	
 	private static final String ENDPOINT = "http://api.flickr.com/services/rest/";
 	private static final String AppProInt_Code = "93a7f095d43d5ae04d828284e0ac3a25";
