@@ -15,7 +15,7 @@ public class PhotoGalleryActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_photo_gallery);
+		setContentView(R.layout.activity_fragment);
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()

@@ -37,7 +37,11 @@
                 android:resource="@xml/searchable" 
                 />
         </activity>
-        
+        <activity
+            android:name=".PhotoPageActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" >
+            <meta-data android:name="android.support.PARENT_ACTIVITY" android:value="com.samsung.sra.tutorial.photogallery.PhotoGalleryActivity"></meta-data>
+        </activity>"
         <service android:name="com.samsung.sra.tutorial.photogallery.PollService" />
         <receiver android:name=".StartupReceiver">
             <intent-filter>
