@@ -83,11 +83,13 @@ public class FlickrFetchr {
 					String id = parser.getAttributeValue(null, "id");
 					String caption = parser.getAttributeValue(null, "title");
 					String smallUrl = parser.getAttributeValue(null, EXTRA_SMALL_URL);
+					String owner = parser.getAttributeValue(null, "owner");
 					
 					GalleryItem item = new GalleryItem();
 					item.setId(id);
 					item.setCaption(caption);
 					item.setUrl(smallUrl);
+					item.setOwner(owner);
 					items.add(item);
 				} else if (XML_PHOTOS.equals(tagName)) {
 					// If it's information about the photos and we have an activity, generate a Toast on the UI thread showing the number of total results
