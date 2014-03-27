@@ -1,12 +1,17 @@
 package com.samsung.sra.tutorial.photogallery;
 
+import android.app.SearchManager;
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 public class PhotoGalleryActivity extends ActionBarActivity {
-
+	private static final String TAG = "PhotoGalleryActivity";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -26,6 +31,24 @@ public class PhotoGalleryActivity extends ActionBarActivity {
 		return true;
 	}
 
+	@Override
+	public void onNewIntent(Intent intent) {
+		PhotoGalleryFragment fragment = (PhotoGalleryFragment) getSupportFragmentManager().findFragmentById(R.id.container);
+		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+			String query = intent.getStringExtra(SearchManager.QUERY);
+			Log.i(TAG, "Received a new search query: " + query);
+			
+			PreferenceManager.getDefaultSharedPreferences(this)
+				.edit()
+				.putString(FlickrFetchr.PREF_SEARCH_QUERY, query)
+				.commit();
+		} else
+			Log.d(TAG, "New intent that wasn't a search query");
+		
+		fragment.updateItems();
+	}
+	
+	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
