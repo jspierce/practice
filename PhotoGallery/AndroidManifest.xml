@@ -8,9 +8,13 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="18" />
 
+    <permission android:name="com.samsung.sra.tutorial.photogallery.PRIVATE"
+        android:protectionLevel="signature" />
+    
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="com.samsung.sra.tutorial.photogallery.PRIVATE" />
     
     <application
         android:allowBackup="true"
