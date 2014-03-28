@@ -3,12 +3,16 @@ package com.samsung.sra.tutorial.runtracker;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
 public class RunManager {
 	private static final String TAG = "RunManager";
+	
+	private static final String PREFS_FILE = "runs";
+	private static final String PREF_CURRENT_RUN_ID = "RunManager.currentRunId";
 	
 	public static final String ACTION_LOCATION = "com.samsung.sra.tutorial.runtracker.ACTION_LOCATION";
 	
@@ -20,11 +24,17 @@ public class RunManager {
 	private static RunManager sRunManager;		// singleton
 	private Context mAppContext;
 	private LocationManager mLocationManager;
+	private RunDatabaseHelper mDatabaseHelper;
+	private SharedPreferences mPrefs;
+	private long mCurrentRunId;
 	
 	// The private constructor forces code to use RunManager.get(Context)
 	private RunManager(Context appContext) {
 		mAppContext = appContext;
 		mLocationManager = (LocationManager) appContext.getSystemService(Context.LOCATION_SERVICE);
+		mDatabaseHelper = new RunDatabaseHelper(appContext);
+		mPrefs = mAppContext.getSharedPreferences(PREFS_FILE, Context.MODE_PRIVATE);
+		mCurrentRunId = mPrefs.getLong(PREF_CURRENT_RUN_ID, -1);
 	}
 	
 	// Class method for accessing the singleton
@@ -35,6 +45,44 @@ public class RunManager {
 		}
 		
 		return sRunManager;
+	}
+	
+	public Run startNewRun() {
+		// Insert a run into the database
+		Run run = insertRun();
+		
+		// Start tracking the run
+		startTrackingRun(run);
+		return run;
+	}
+	
+	public void startTrackingRun(Run run) {
+		// Keep the ID
+		mCurrentRunId = run.getId();
+		
+		// Store it in shared preferences
+		mPrefs.edit().putLong(PREF_CURRENT_RUN_ID, mCurrentRunId).commit();
+		
+		// Start location updates
+		startLocationUpdates();
+	}
+	
+	public void stopRun() {
+		stopLocationUpdates();
+		mCurrentRunId = -1;
+		mPrefs.edit().remove(PREF_CURRENT_RUN_ID).commit();
+	}
+	
+	private Run insertRun() {
+		Run run = new Run();
+		run.setId(mDatabaseHelper.insertRun(run));
+		return run;
+	}
+	
+	public void insertLocation(Location location) {
+		if (mCurrentRunId != -1) {
+			mDatabaseHelper.insertLocation(mCurrentRunId, location);
+		}
 	}
 	
 	private PendingIntent getLocationPendingIntent(boolean shouldCreate) {
