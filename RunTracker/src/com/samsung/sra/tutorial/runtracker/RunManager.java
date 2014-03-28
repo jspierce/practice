@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.location.LocationManager;
 
 public class RunManager {
-	private static final String TAG = "RunManager";
+	//private static final String TAG = "RunManager";
 	
 	public static final String ACTION_LOCATION = "com.samsung.sra.tutorial.runtracker.ACTION_LOCATION";
 	
