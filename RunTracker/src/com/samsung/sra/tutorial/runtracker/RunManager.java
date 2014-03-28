@@ -85,6 +85,10 @@ public class RunManager {
 		}
 	}
 	
+	public RunDatabaseHelper.RunCursor queryRuns() {
+		return mDatabaseHelper.queryRuns();
+	}
+	
 	private PendingIntent getLocationPendingIntent(boolean shouldCreate) {
 		Intent broadcast = new Intent(ACTION_LOCATION);
 		int flags = shouldCreate ? 0 : PendingIntent.FLAG_NO_CREATE;
