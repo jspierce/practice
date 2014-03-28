@@ -2,11 +2,15 @@ package com.samsung.sra.tutorial.draganddraw;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -83,6 +87,57 @@ public class BoxDrawingView extends View {
 			float bottom = Math.max(origin.y, current.y);
 			
 			canvas.drawRect(left, top, right, bottom, mBoxPaint);
+		}
+	}
+	
+	
+	@Override
+	protected Parcelable onSaveInstanceState() {
+		Log.d(TAG, "Saving box data");
+		
+		Parcelable parentState = super.onSaveInstanceState();
+		
+		Bundle state = new Bundle();
+		
+		ArrayList<Bundle> boxData = new ArrayList<Bundle>();
+		for (Box box: mBoxes) {
+			Bundle boxBundle = new Bundle();
+			
+			PointF origin = box.getOrigin();
+			boxBundle.putFloat("originX", origin.x);
+			boxBundle.putFloat("originY", origin.y);
+			PointF current = box.getCurrent();
+			boxBundle.putFloat("currentX", current.x);
+			boxBundle.putFloat("currentY", current.y);
+			
+			boxData.add(boxBundle);
+		}
+		
+		state.putParcelableArrayList("boxData", boxData);
+		state.putParcelable("parentState", parentState);
+		
+		return state;
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Parcelable state) {
+		Log.d(TAG, "Restoring box data");
+		Bundle stateBundle = (Bundle) state;
+		
+		Parcelable parentState = stateBundle.getParcelable("parentState");
+		super.onRestoreInstanceState(parentState);
+		
+		ArrayList<Parcelable> boxData = stateBundle.getParcelableArrayList("boxData");
+		
+		for (Parcelable boxParcelable: boxData) {
+			Bundle boxBundle = (Bundle) boxParcelable;
+			
+			PointF origin = new PointF(boxBundle.getFloat("originX"), boxBundle.getFloat("originY"));
+			PointF current = new PointF(boxBundle.getFloat("currentX"), boxBundle.getFloat("currentY"));
+			Box box = new Box(origin);
+			box.setCurrent(current);
+			
+			mBoxes.add(box);
 		}
 	}
 	
