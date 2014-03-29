@@ -68,6 +68,30 @@ public class RunDatabaseHelper extends SQLiteOpenHelper {
 		return new RunCursor(wrapped);
 	}
 	
+	public RunCursor queryRun(long id) {
+		Cursor wrapped = getReadableDatabase().query(TABLE_RUN,
+				null,  // All columns
+				COLUMN_RUN_ID + " = ?", // Look for a run ID
+				new String[] { String.valueOf(id) }, // with this value
+				null, // group by
+				null, // order by
+				null, // having
+				"1"); // limit 1 row
+		return new RunCursor(wrapped);
+	}
+	
+	public LocationCursor queryLastLocationForRun(long runId) {
+		Cursor wrapped = getReadableDatabase().query(TABLE_LOCATION,
+				null, // All columns
+				COLUMN_LOCATION_RUN_ID + " = ?", // limit to the given run
+				new String[]{ String.valueOf(runId) },
+				null, // group by
+				null, //having
+				COLUMN_LOCATION_TIMESTAMP + " desc", // order by latest first
+				"1"); // limit 1
+		return new LocationCursor(wrapped);
+	}
+	
 	/**
 	 * A convenience class to wrap a cursor that returns rows from the "run" table
 	 * The getRun() method will return a Run instance representing the current row
@@ -91,6 +115,29 @@ public class RunDatabaseHelper extends SQLiteOpenHelper {
 			run.setStartDate(new Date(startDate));
 			
 			return run;
+		}
+	}
+	
+	public static class LocationCursor extends CursorWrapper {
+		public LocationCursor(Cursor c) {
+			super(c);
+		}
+		
+		public Location getLocation() {
+			if (isBeforeFirst() || isAfterLast())
+				return null;
+			
+			// First get the provider out so we can use the constructor
+			String provider = getString(getColumnIndex(COLUMN_LOCATION_PROVIDER));
+			Location location = new Location(provider);
+			
+			// Populate the remaining properties
+			location.setLongitude(getDouble(getColumnIndex(COLUMN_LOCATION_LONGITUDE)));
+			location.setLatitude(getDouble(getColumnIndex(COLUMN_LOCATION_LATITUDE)));
+			location.setAltitude(getDouble(getColumnIndex(COLUMN_LOCATION_ALTITUDE)));
+			location.setTime(getLong(getColumnIndex(COLUMN_LOCATION_TIMESTAMP)));
+			
+			return location;
 		}
 	}
 }

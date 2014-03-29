@@ -6,15 +6,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class RunActivity extends ActionBarActivity {
-
+	public static final String EXTRA_RUN_ID = "com.samsung.sra.tutorial.runtracker.run_id";
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_fragment);
 
 		if (savedInstanceState == null) {
+			long runId = getIntent().getLongExtra(EXTRA_RUN_ID, -1);
+			RunFragment fragment;
+			if (runId != -1)
+				fragment = RunFragment.newInstance(runId);
+			else
+				fragment = new RunFragment();
+			
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new RunFragment()).commit();
+					.add(R.id.container, fragment).commit();
 		}
 	}
 

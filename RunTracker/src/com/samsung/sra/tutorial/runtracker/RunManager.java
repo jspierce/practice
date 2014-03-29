@@ -89,6 +89,19 @@ public class RunManager {
 		return mDatabaseHelper.queryRuns();
 	}
 	
+	public Run getRun(long id) {
+		Run run = null;
+		RunDatabaseHelper.RunCursor cursor = mDatabaseHelper.queryRun(id);
+		cursor.moveToFirst();
+		
+		// If we got a row, get a run
+		if (!cursor.isAfterLast())
+			run = cursor.getRun();
+		
+		cursor.close();
+		return run;
+	}
+	
 	private PendingIntent getLocationPendingIntent(boolean shouldCreate) {
 		Intent broadcast = new Intent(ACTION_LOCATION);
 		int flags = shouldCreate ? 0 : PendingIntent.FLAG_NO_CREATE;
@@ -135,5 +148,9 @@ public class RunManager {
 	
 	public boolean isTrackingRun() {
 		return getLocationPendingIntent(false) != null;
+	}
+	
+	public boolean isTrackingRun(Run run) {
+		return mCurrentRunId == run.getId();
 	}
 }
