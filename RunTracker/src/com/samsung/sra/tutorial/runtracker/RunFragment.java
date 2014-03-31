@@ -99,7 +99,9 @@ public class RunFragment extends Fragment {
 				
 				// Pop up an ongoing notification that we're tracking the user
 				Activity activity = getActivity();
-				PendingIntent pi = PendingIntent.getActivity(activity, 0, new Intent(activity, RunActivity.class), 0);
+				Intent i = new Intent(activity, RunActivity.class);
+				i.putExtra(RunActivity.EXTRA_RUN_ID, mRun.getId());
+				PendingIntent pi = PendingIntent.getActivity(activity, 0, i, 0);
 				Resources r = getResources();
 				
 				Notification notification = new NotificationCompat.Builder(activity)
