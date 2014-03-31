@@ -3,6 +3,7 @@ package com.samsung.sra.tutorial.runtracker;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.CursorAdapter;
@@ -73,7 +74,7 @@ public class RunListFragment extends ListFragment {
 		}
 	}
 	
-	private static class RunCursorAdapter extends CursorAdapter {
+	private class RunCursorAdapter extends CursorAdapter {
 		private RunDatabaseHelper.RunCursor mRunCursor;
 		
 		public RunCursorAdapter(Context context, RunDatabaseHelper.RunCursor cursor) {
@@ -97,6 +98,13 @@ public class RunListFragment extends ListFragment {
 			TextView startDateTextView = (TextView) view;
 			String cellText = context.getString(R.string.cell_text, run.getStartDate());
 			startDateTextView.setText(cellText);
+			
+			// Visually distinguish the run if it's currently being tracked
+			if (RunManager.get(getActivity()).isTrackingRun(run)) {
+				startDateTextView.setTextColor(Color.parseColor("#0000ff"));
+			} else {
+				startDateTextView.setTextColor(Color.parseColor("#000000"));
+			}
 		}
 	}
 }
