@@ -1,11 +1,18 @@
 package com.samsung.sra.tutorial.runtracker;
 
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +22,7 @@ import android.widget.Toast;
 
 public class RunFragment extends Fragment {
 	private static final String ARG_RUN_ID = "RUN_ID";
+	private static final int NOTIFICATION_ID = 1;
 	
 	private Button mStartButton, mStopButton;
 	private TextView mStartedTextView, mLatitudeTextView, mLongitudeTextView, mAltitudeTextView, mDurationTextView;
@@ -88,6 +96,24 @@ public class RunFragment extends Fragment {
 				}
 				
 				updateUI();
+				
+				// Pop up an ongoing notification that we're tracking the user
+				Activity activity = getActivity();
+				PendingIntent pi = PendingIntent.getActivity(activity, 0, new Intent(activity, RunActivity.class), 0);
+				Resources r = getResources();
+				
+				Notification notification = new NotificationCompat.Builder(activity)
+					.setTicker(r.getString(R.string.notification_title))
+					.setSmallIcon(R.drawable.ic_launcher)
+					.setContentTitle(r.getString(R.string.notification_title))
+					.setContentText(r.getString(R.string.notification_text))
+					.setContentIntent(pi)
+					.setOngoing(true)
+					.build();
+				
+				NotificationManager notificationManager = (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+				notificationManager.notify(NOTIFICATION_ID, notification);
+
 			}
 		});
 		
@@ -98,6 +124,10 @@ public class RunFragment extends Fragment {
 			public void onClick(View v) {
 				mRunManager.stopRun();
 				updateUI();
+				
+				// Remove the ongoing notification
+				NotificationManager notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+				notificationManager.cancel(NOTIFICATION_ID);
 			}
 		});
 		
@@ -109,12 +139,14 @@ public class RunFragment extends Fragment {
 	@Override
 	public void onStart() {
 		super.onStart();
+		
 		getActivity().registerReceiver(mLocationReceiver, new IntentFilter(RunManager.ACTION_LOCATION));
 	}
 	
 	@Override
 	public void onStop() {
 		getActivity().unregisterReceiver(mLocationReceiver);
+				
 		super.onStop();
 	}
 	
