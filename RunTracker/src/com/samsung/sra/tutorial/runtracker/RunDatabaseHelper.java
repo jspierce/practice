@@ -64,7 +64,7 @@ public class RunDatabaseHelper extends SQLiteOpenHelper {
 	
 	public RunCursor queryRuns() {
 		// Equivalent to "select * from run order by start_date asc"
-		Cursor wrapped = getReadableDatabase().query(TABLE_RUN, null, null, null, null, null, COLUMN_RUN_START_DATE + " asc");
+		Cursor wrapped = getReadableDatabase().query(TABLE_RUN, null, null, null, null, null, COLUMN_RUN_START_DATE + " desc");
 		return new RunCursor(wrapped);
 	}
 	
@@ -74,8 +74,8 @@ public class RunDatabaseHelper extends SQLiteOpenHelper {
 				COLUMN_RUN_ID + " = ?", // Look for a run ID
 				new String[] { String.valueOf(id) }, // with this value
 				null, // group by
-				null, // order by
 				null, // having
+				null, // order by
 				"1"); // limit 1 row
 		return new RunCursor(wrapped);
 	}
