@@ -8,6 +8,8 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
+import com.samsung.sra.tutorial.runtracker.RunDatabaseHelper.LocationCursor;
+
 public class RunManager {
 	private static final String TAG = "RunManager";
 	
@@ -102,6 +104,19 @@ public class RunManager {
 		return run;
 	}
 	
+	public Location getLastLocationForRun(long runId) {
+		Location location = null;
+		RunDatabaseHelper.LocationCursor cursor = mDatabaseHelper.queryLastLocationForRun(runId);
+		cursor.moveToFirst();
+		
+		// If we got a row, get a run
+		if (!cursor.isAfterLast())
+			location = cursor.getLocation();
+				
+		cursor.close();
+		return location;
+	}
+	
 	private PendingIntent getLocationPendingIntent(boolean shouldCreate) {
 		Intent broadcast = new Intent(ACTION_LOCATION);
 		int flags = shouldCreate ? 0 : PendingIntent.FLAG_NO_CREATE;
@@ -151,6 +166,9 @@ public class RunManager {
 	}
 	
 	public boolean isTrackingRun(Run run) {
+		if (run == null)
+			return false;
+		
 		return mCurrentRunId == run.getId();
 	}
 }
