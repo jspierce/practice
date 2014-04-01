@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SBIC</string>
+    <string name="instructions">Welcome to Samsung Brain Intention Capture.\n\nPlace your forehead against the screen to input your intention.</string>
+    <string name="action_settings">Settings</string>
+
+</resources>

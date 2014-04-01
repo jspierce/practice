@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array
+        name="candidate_intentions_array">
+        <item>I intend to clean my smartphone screen.</item>
+        <item>I intend to moisturize.</item>
+        <item>I intend to purchase Samsung Fly-Fi.</item>
+        <item>I intend to live forever.</item>
+        <item>I intend to expose this plot.</item>
+        <item>I intend to contest court jurisdiction.</item>
+        <item>I intend to hold you for the longest time.</item>
+        <item>I intend to misbehave.</item>
+        <item>I intend to make them grovel.</item>
+        <item>I intend to write a strongly worded letter.</item>
+        
+    </string-array>
+</resources>
