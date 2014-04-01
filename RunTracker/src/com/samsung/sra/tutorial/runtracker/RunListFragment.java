@@ -6,7 +6,10 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,29 +19,19 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class RunListFragment extends ListFragment {
+public class RunListFragment extends ListFragment implements LoaderCallbacks<Cursor> {
+	private static final String TAG = "ListFragment";
 	private static final int REQUEST_NEW_RUN = 0;
-	
-	private RunDatabaseHelper.RunCursor mCursor;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
-		
-		// Query the list of runs
-		mCursor = RunManager.get(getActivity()).queryRuns();
-		
-		// Create an adapter to use the cursor
-		RunCursorAdapter adapter = new RunCursorAdapter(getActivity(), mCursor);
-		setListAdapter(adapter);
+			
+		// Initialize the loader to load the list of runs
+		getLoaderManager().initLoader(0, null, this);
 	}
 	
-	@Override
-	public void onDestroy() {
-		mCursor.close();
-		super.onDestroy();
-	}
 	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -69,9 +62,34 @@ public class RunListFragment extends ListFragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (REQUEST_NEW_RUN == requestCode) {
-			mCursor.requery();
-			((RunCursorAdapter) getListAdapter()).notifyDataSetChanged();
+			// Restart the loader to get any new run available
+			getLoaderManager().restartLoader(0, null, this);
 		}
+	}
+	
+	@Override
+	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+		Log.d(TAG, "Creating loader");
+		
+		// We only load the runs, so assume that's what we're doing
+		return new RunListCursorLoader(getActivity());
+	}
+	
+	@Override
+	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+		Log.d(TAG, "Load finished");
+		
+		// Create an adapter to point at this cursor
+		RunCursorAdapter adapter = new RunCursorAdapter(getActivity(), (RunDatabaseHelper.RunCursor) cursor);
+		setListAdapter(adapter);
+	}
+	
+	@Override
+	public void onLoaderReset(Loader<Cursor> loader) {
+		Log.d(TAG, "Reseting loader");
+		
+		// Stop using the cursor (via the adapter)
+		setListAdapter(null);
 	}
 	
 	private class RunCursorAdapter extends CursorAdapter {
@@ -105,6 +123,20 @@ public class RunListFragment extends ListFragment {
 			} else {
 				startDateTextView.setTextColor(Color.parseColor("#000000"));
 			}
+		}
+	}
+	
+	private static class RunListCursorLoader extends SQLiteCursorLoader {
+		public RunListCursorLoader(Context context) {
+			super(context);
+		}
+		
+		@Override
+		protected Cursor loadCursor() {
+			Log.d(TAG, "Attempting to load the cursor");
+			
+			// Query the list of runs
+			return RunManager.get(getContext()).queryRuns();
 		}
 	}
 }

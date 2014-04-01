@@ -8,8 +8,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 
-import com.samsung.sra.tutorial.runtracker.RunDatabaseHelper.LocationCursor;
-
 public class RunManager {
 	private static final String TAG = "RunManager";
 	

@@ -65,6 +65,7 @@ public class RunDatabaseHelper extends SQLiteOpenHelper {
 	public RunCursor queryRuns() {
 		// Equivalent to "select * from run order by start_date asc"
 		Cursor wrapped = getReadableDatabase().query(TABLE_RUN, null, null, null, null, null, COLUMN_RUN_START_DATE + " desc");
+		
 		return new RunCursor(wrapped);
 	}
 	
