@@ -167,6 +167,10 @@ public class RunManager {
 		return getLocationPendingIntent(false) != null;
 	}
 	
+	public boolean isTrackingRun(long runId) {
+		return mCurrentRunId == runId;
+	}
+	
 	public boolean isTrackingRun(Run run) {
 		if (run == null)
 			return false;
